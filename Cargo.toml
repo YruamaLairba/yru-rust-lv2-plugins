@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
+    "xtask",
     "yru-echo-rs",
 ]
 
