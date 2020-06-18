@@ -6,7 +6,7 @@ struct Ports {
     input: InputPort<Audio>,
     output: OutputPort<Audio>,
     delay: InputPort<Control>,
-    _feedback: InputPort<Control>,
+    feedback: InputPort<Control>,
     _mix: InputPort<Control>,
 }
 
@@ -34,8 +34,9 @@ impl Plugin for YruEchoRs {
         let delay_s = self.sr * (*ports.delay as f32) * 0.001;
         let rb_index = self.rb.len() - (delay_s as usize).max(1).min(self.rb.len());
         for (s_in, s_out) in Iterator::zip(ports.input.iter(), ports.output.iter_mut()) {
-            *s_out = *self.rb.get(rb_index);
-            self.rb.push(*s_in);
+            let delay_out = *self.rb.get(rb_index);
+            self.rb.push(*s_in+(*ports.feedback)*delay_out);
+            *s_out = delay_out;
         }
     }
 }
