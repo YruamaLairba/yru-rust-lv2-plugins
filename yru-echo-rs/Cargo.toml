@@ -12,3 +12,4 @@ crate-type = ["cdylib"]
 lv2-core = "2.*"
 lv2-urid = "2.*"
 urid = "0.1.*"
+dasp_ring_buffer = "0.11.*"
