@@ -4,8 +4,8 @@ use urid::*;
 #[derive(PortCollection)]
 struct Ports {
     input: InputPort<Audio>,
-    output:OutputPort<Audio>,
-    _delay: InputPort<Control>,
+    output: OutputPort<Audio>,
+    delay: InputPort<Control>,
     _feedback: InputPort<Control>,
     _mix: InputPort<Control>,
 }
@@ -14,6 +14,7 @@ struct Ports {
 /// does nothing.
 #[uri("urn:yru-rust-lv2-plugins:yru-echo-rs")]
 struct YruEchoRs {
+    sr: f32,
     rb: dasp_ring_buffer::Fixed<Vec<f32>>,
 }
 
@@ -23,16 +24,19 @@ impl Plugin for YruEchoRs {
     type AudioFeatures = ();
 
     fn new(plugin_info: &PluginInfo, _features: &mut Self::InitFeatures) -> Option<Self> {
-        let rb = dasp_ring_buffer::Fixed::from(vec![0f32;(plugin_info.sample_rate()*5.0).ceil() as usize+1]);
-        Some(Self {rb})
+        let sr = plugin_info.sample_rate() as _;
+        let max_delay_s = (plugin_info.sample_rate() * 5.0).ceil() as _;
+        let rb = dasp_ring_buffer::Fixed::from(vec![ 0f32; max_delay_s ]);
+        Some(Self { sr, rb })
     }
 
     fn run(&mut self, ports: &mut Ports, _features: &mut Self::AudioFeatures) {
+        let delay_s = self.sr * (*ports.delay as f32) * 0.001;
+        let rb_index = self.rb.len() - (delay_s as usize).max(1).min(self.rb.len());
         for (s_in, s_out) in Iterator::zip(ports.input.iter(), ports.output.iter_mut()) {
-            *s_out = *self.rb.get(0);
+            *s_out = *self.rb.get(rb_index);
             self.rb.push(*s_in);
         }
-
     }
 }
 
