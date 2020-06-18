@@ -7,7 +7,7 @@ struct Ports {
     output: OutputPort<Audio>,
     delay: InputPort<Control>,
     feedback: InputPort<Control>,
-    _mix: InputPort<Control>,
+    mix: InputPort<Control>,
 }
 
 /// A plugin to demonstrate how to make preset. This is fully handled by rdf spec, so the plugin
@@ -32,11 +32,13 @@ impl Plugin for YruEchoRs {
 
     fn run(&mut self, ports: &mut Ports, _features: &mut Self::AudioFeatures) {
         let delay_s = self.sr * (*ports.delay as f32) * 0.001;
+        let feedback = *ports.feedback;
+        let mix = *ports.mix;
         let rb_index = self.rb.len() - (delay_s as usize).max(1).min(self.rb.len());
         for (s_in, s_out) in Iterator::zip(ports.input.iter(), ports.output.iter_mut()) {
             let delay_out = *self.rb.get(rb_index);
-            self.rb.push(*s_in+(*ports.feedback)*delay_out);
-            *s_out = delay_out;
+            self.rb.push(*s_in+feedback*delay_out);
+            *s_out = mix*delay_out + (1.0-mix)*(*s_in);
         }
     }
 }
