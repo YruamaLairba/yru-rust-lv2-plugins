@@ -37,7 +37,7 @@
 		units:unit   units:ms;
 		lv2:default 100 ;
 		lv2:minimum 0 ;
-		lv2:maximum 5000 ;
+		lv2:maximum 2000 ;
 	] , [
 		a lv2:InputPort ,
 			lv2:ControlPort ;

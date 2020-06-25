@@ -25,7 +25,7 @@ impl Plugin for YruEchoRs {
 
     fn new(plugin_info: &PluginInfo, _features: &mut Self::InitFeatures) -> Option<Self> {
         let sr = plugin_info.sample_rate() as _;
-        let max_delay_s = (plugin_info.sample_rate() * 5.0).ceil() as _;
+        let max_delay_s = (plugin_info.sample_rate() * 2.0).ceil() as _;
         let rb = dasp_ring_buffer::Fixed::from(vec![ 0f32; max_delay_s ]);
         Some(Self { sr, rb })
     }
