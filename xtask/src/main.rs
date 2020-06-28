@@ -47,6 +47,32 @@ const PACKAGES_CONF: &[PackageConf] = &[
             Ok(())
         },
     },
+    PackageConf {
+        name: "yru-chorus-rs",
+        post_build: |conf| {
+            let built_bin_name = [&conf.lib_prefix(), "yru_chorus_rs", &conf.lib_suffix()].concat();
+            let lib_file_name = [&conf.lib_prefix(), "yru-chorus-rs", &conf.lib_suffix()].concat();
+            let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
+            let src_dir = workspace_root().join("yru-chorus-rs");
+            let out_dir = conf.build_dir().join("lv2").join("yru-chorus-rs");
+            fs::create_dir_all(&out_dir).unwrap();
+            subst(
+                src_dir.join("manifest.ttl"),
+                out_dir.join("manifest.ttl"),
+                subs,
+            )
+            .unwrap();
+            for e in &["yru-chorus-rs.ttl"] {
+                fs::copy(src_dir.join(e), out_dir.join(e)).unwrap();
+            }
+            fs::copy(
+                conf.build_dir().join(&built_bin_name),
+                out_dir.join(&lib_file_name),
+            )
+            .unwrap();
+            Ok(())
+        },
+    },
 ];
 
 struct Config<'a> {
