@@ -72,8 +72,14 @@ impl Plugin for YruChorusRs {
                 self.progression -= 1.0;
             }
 
-            let rb_index = self.rb.len() - (delay_smpl as usize).max(1).min(self.rb.len());
-            let delay_out = *self.rb.get(rb_index);
+            let delay_smpl_i = delay_smpl.floor(); // integral part
+            let delay_smpl_d = delay_smpl - delay_smpl_i; // decimal part
+
+            let rb_index_a = self.rb.len() - (delay_smpl_i as usize).max(1).min(self.rb.len());
+            let rb_index_b = self.rb.len() - (delay_smpl_i as usize + 1).max(1).min(self.rb.len());
+            let delay_out = *self.rb.get(rb_index_a) * (1.0 - delay_smpl_d)
+                + *self.rb.get(rb_index_b) * delay_smpl_d;
+
             self.rb.push(*s_in);
             *s_out = mix * delay_out + (1.0 - mix) * (*s_in);
         }
