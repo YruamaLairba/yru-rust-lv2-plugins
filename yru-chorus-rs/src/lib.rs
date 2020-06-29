@@ -16,24 +16,23 @@ use lv2_core::prelude::*;
 use std::f32::consts::PI;
 use urid::*;
 
-// maximum variation in delay line
-const MAX_CHORUS_AMPLITUDE_SEC: f32 = 0.030;
-
-const MIN_DELAY_SEC: f32 = 0.010;
-const MAX_DELAY_SEC: f32 = MIN_DELAY_SEC + MAX_CHORUS_AMPLITUDE_SEC;
+// maximum delay on the delay knob
+const CTL_MAX_DELAY_SEC: f32 = 20E-3;
 
 #[derive(PortCollection)]
 struct Ports {
     input: InputPort<Audio>,
     output: OutputPort<Audio>,
-    rate: InputPort<Control>,
+    ctl_delay: InputPort<Control>,
     depth: InputPort<Control>,
+    rate: InputPort<Control>,
     mix: InputPort<Control>,
 }
 
 #[uri("urn:yru-rust-lv2-plugins:yru-chorus-rs")]
 struct YruChorusRs {
     rb: dasp_ring_buffer::Fixed<Vec<f32>>,
+    rb_max_i: usize, //last rb index
     sr: f32,
     progression: f32, // progression of modulation
 }
@@ -45,28 +44,29 @@ impl Plugin for YruChorusRs {
 
     fn new(plugin_info: &PluginInfo, _features: &mut Self::InitFeatures) -> Option<Self> {
         let sr = plugin_info.sample_rate() as _;
-        let max_delay_smpl = (plugin_info.sample_rate() as f32 * MAX_DELAY_SEC).ceil() as _;
-        let rb = dasp_ring_buffer::Fixed::from(vec![0f32; max_delay_smpl]);
+        //the trailing +1 is a headroom to absorb rounding error during delay calculation 
+        let rb_max_i =
+            (plugin_info.sample_rate() as f32 * 2.0 * CTL_MAX_DELAY_SEC).ceil() as usize + 1;
+        let rb_size = rb_max_i + 1;
+        let rb = dasp_ring_buffer::Fixed::from(vec![0f32; rb_size]);
         let progression = 0.0;
         Some(Self {
             rb,
+            rb_max_i,
             sr,
             progression,
         })
     }
 
     fn run(&mut self, ports: &mut Ports, _features: &mut Self::AudioFeatures) {
-        let rate_smpl = *ports.rate / self.sr;
+        let avg_delay_smpl = *ports.ctl_delay * 1E-3 * self.sr;
         let depth = *ports.depth;
+        let rate_smpl = *ports.rate / self.sr;
         let mix = *ports.mix;
         for (s_in, s_out) in Iterator::zip(ports.input.iter(), ports.output.iter_mut()) {
+            self.rb.push(*s_in);
             //lfo out, control of the delay line
-            let delay_smpl = (0.5
-                * (1.0 + f32::sin(2.0 * PI * self.progression))
-                * depth
-                * MAX_CHORUS_AMPLITUDE_SEC
-                + MIN_DELAY_SEC)
-                * self.sr;
+            let delay_smpl = (f32::sin(2.0 * PI * self.progression) * depth + 1.0) * avg_delay_smpl;
             self.progression += rate_smpl;
             if self.progression > 1.0 {
                 self.progression -= 1.0;
@@ -75,12 +75,11 @@ impl Plugin for YruChorusRs {
             let delay_smpl_i = delay_smpl.floor(); // integral part
             let delay_smpl_d = delay_smpl - delay_smpl_i; // decimal part
 
-            let rb_index_a = self.rb.len() - (delay_smpl_i as usize).max(1).min(self.rb.len());
-            let rb_index_b = self.rb.len() - (delay_smpl_i as usize + 1).max(1).min(self.rb.len());
+            let rb_index_a = self.rb_max_i - (delay_smpl_i as usize).min(self.rb_max_i);
+            let rb_index_b = self.rb_max_i - (delay_smpl_i as usize + 1).min(self.rb_max_i);
             let delay_out = *self.rb.get(rb_index_a) * (1.0 - delay_smpl_d)
                 + *self.rb.get(rb_index_b) * delay_smpl_d;
 
-            self.rb.push(*s_in);
             *s_out = mix * delay_out + (1.0 - mix) * (*s_in);
         }
     }
