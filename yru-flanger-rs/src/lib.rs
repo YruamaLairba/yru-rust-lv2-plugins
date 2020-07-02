@@ -27,7 +27,6 @@ struct Ports {
     depth: InputPort<Control>,
     rate: InputPort<Control>,
     feedback: InputPort<Control>,
-    mix: InputPort<Control>,
 }
 
 #[uri("urn:yru-rust-lv2-plugins:yru-flanger-rs")]
@@ -61,7 +60,6 @@ impl Plugin for YruFlangerRs {
         let depth = *ports.depth;
         let rate_smpl = *ports.rate / self.sr;
         let feedback = *ports.feedback;
-        let mix = *ports.mix;
         for (s_in, s_out) in Iterator::zip(ports.input.iter(), ports.output.iter_mut()) {
             //lfo out, control of the delay line. A least one sample of delay is required for
             //feeback
@@ -78,9 +76,10 @@ impl Plugin for YruFlangerRs {
             let rb_index_b = self.rb.len() - (delay_smpl_i as usize + 1).max(1).min(self.rb.len());
             let delay_out = *self.rb.get(rb_index_a) * (1.0 - delay_smpl_d)
                 + *self.rb.get(rb_index_b) * delay_smpl_d;
+            let out = *s_in+ delay_out*feedback;
 
             self.rb.push(delay_out*feedback + s_in);
-            *s_out = mix * delay_out + (1.0 - mix) * (*s_in);
+            *s_out = out;// mix * delay_out + (1.0 - mix) * (*s_in);
         }
     }
 }
