@@ -17,7 +17,7 @@ use std::f32::consts::PI;
 use urid::*;
 
 // maximum delay on the delay knob
-const CTL_MAX_DELAY_SEC: f32 = 20E-3;
+const CTL_MAX_DELAY_SEC: f32 = 10E-3;
 
 #[derive(PortCollection)]
 struct Ports {
