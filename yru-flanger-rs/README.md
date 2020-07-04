@@ -2,8 +2,8 @@
 
 ## Overview
 
-Basic flanger with delay, depth, rate and mix parameters. The
-following diagram give an overview of how it works :
+Basic flanger with delay, depth, rate and feedback parameters. The
+flanger block diagram give an overview of how it works.
 
 ![flanger block diagram](diagram/flanger-diagram.png)
 
@@ -17,7 +17,7 @@ following diagram give an overview of how it works :
  - **rate:** modulation speed in hertz.
  - **feedback:** also known as _regeneration_. It control the amount of signal
    injected back in the delay line.
-   - control intensity of the filter effect.
+   - affect intensity of the filter effect.
    - positive and negative feedback give a different "color".
 
 ## Technical notes
