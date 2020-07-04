@@ -1,0 +1,15 @@
+[package]
+name = "yru-flanger-stereo-rs"
+version = "0.1.0"
+authors = ["Yruama_Lairba <yruama_lairba@hotmail.com>"]
+edition = "2018"
+license = "GPL-3.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+lv2-core = "2.*"
+lv2-urid = "2.*"
+urid = "0.1.*"
+dasp_ring_buffer = "0.11.*"
