@@ -58,7 +58,7 @@
 			"Vitesse"@fr ;
 		units:unit   units:hz;
 		lv2:default 0.40 ;
-		lv2:minimum 0.1 ;
+		lv2:minimum 0 ;
 		lv2:maximum 20 ;
 	] , [
 		a lv2:InputPort ,
