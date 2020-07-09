@@ -48,9 +48,9 @@
 		lv2:name "Delay" ,
 			"Délai"@fr ;
 		units:unit   units:ms;
-		lv2:default 100 ;
-		lv2:minimum 0 ;
-		lv2:maximum 2000 ;
+		lv2:default 100.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 2000.0 ;
 	] , [
 		a lv2:InputPort ,
 			lv2:ControlPort ;
@@ -60,8 +60,8 @@
 			"Rétroaction"@fr ;
 		units:unit   units:coef;
 		lv2:default 0.5 ;
-		lv2:minimum 0 ;
-		lv2:maximum 1 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
 	] , [
 		a lv2:InputPort ,
 			lv2:ControlPort ;
@@ -71,7 +71,7 @@
 			"Mélange"@fr ;
 		units:unit   units:coef;
 		lv2:default 0.5 ;
-		lv2:minimum 0 ;
-		lv2:maximum 1 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
 	] .
 
