@@ -3,12 +3,6 @@
 Personal plugin realisation using the
 [rust-lv2](https://github.com/RustAudio/rust-lv2) framework
 
-## Warning
-
-At this time, these plugins are subject to change and can break backward
-compatibility. It mean you shouldn't use them in a project since updating these
-plugins can break you project.
-
 ## Building
 
 Building for the first time require an internet connection.
