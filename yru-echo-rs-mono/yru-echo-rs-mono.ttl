@@ -12,7 +12,7 @@
 # Associated project
 	lv2:project <https://github.com/YruamaLairba/yru-rust-lv2-plugins>;
 # Plugin name
-	doap:name "Yru Echo Rs" ;
+	doap:name "Yru Echo Rs (Mono)" ;
 	doap:license <https://www.gnu.org/licenses/gpl-3.0> ;
 # ports description
 	lv2:port [
