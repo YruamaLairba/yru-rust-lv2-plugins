@@ -48,13 +48,13 @@ const PACKAGES_CONF: &[PackageConf] = &[
         },
     },
     PackageConf {
-        name: "yru-chorus-rs",
+        name: "yru-chorus-rs-mono",
         post_build: |conf| {
-            let built_bin_name = [&conf.lib_prefix(), "yru_chorus_rs", &conf.lib_suffix()].concat();
-            let lib_file_name = [&conf.lib_prefix(), "yru-chorus-rs", &conf.lib_suffix()].concat();
+            let built_bin_name = [&conf.lib_prefix(), "yru_chorus_rs_mono", &conf.lib_suffix()].concat();
+            let lib_file_name = [&conf.lib_prefix(), "yru-chorus-rs-mono", &conf.lib_suffix()].concat();
             let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
-            let src_dir = workspace_root().join("yru-chorus-rs");
-            let out_dir = conf.build_dir().join("lv2").join("yru-chorus-rs");
+            let src_dir = workspace_root().join("yru-chorus-rs-mono");
+            let out_dir = conf.build_dir().join("lv2").join("yru-chorus-rs-mono");
             fs::create_dir_all(&out_dir).unwrap();
             subst(
                 src_dir.join("manifest.ttl"),
@@ -62,7 +62,7 @@ const PACKAGES_CONF: &[PackageConf] = &[
                 subs,
             )
             .unwrap();
-            for e in &["yru-chorus-rs.ttl"] {
+            for e in &["yru-chorus-rs-mono.ttl"] {
                 fs::copy(src_dir.join(e), out_dir.join(e)).unwrap();
             }
             fs::copy(

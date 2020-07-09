@@ -29,7 +29,7 @@ struct Ports {
     mix: InputPort<Control>,
 }
 
-#[uri("urn:yru-rust-lv2-plugins:yru-chorus-rs")]
+#[uri("urn:yru-rust-lv2-plugins:yru-chorus-rs-mono")]
 struct YruChorusRs {
     rb: dasp_ring_buffer::Fixed<Vec<f32>>,
     rb_max_i: usize, //last rb index

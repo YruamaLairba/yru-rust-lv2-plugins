@@ -2,7 +2,7 @@
 
 members = [
     "xtask",
-    "yru-chorus-rs",
+    "yru-chorus-rs-mono",
     "yru-chorus-stereo-rs",
     "yru-flanger-rs",
     "yru-flanger-stereo-rs",
