@@ -22,13 +22,13 @@ struct PackageConf<'a> {
 
 const PACKAGES_CONF: &[PackageConf] = &[
     PackageConf {
-        name: "yru-echo-rs",
+        name: "yru-echo-rs-mono",
         post_build: |conf| {
-            let built_bin_name = [&conf.lib_prefix(), "yru_echo_rs", &conf.lib_suffix()].concat();
-            let lib_file_name = [&conf.lib_prefix(), "yru-echo-rs", &conf.lib_suffix()].concat();
+            let built_bin_name = [&conf.lib_prefix(), "yru_echo_rs_mono", &conf.lib_suffix()].concat();
+            let lib_file_name = [&conf.lib_prefix(), "yru-echo-rs-mono", &conf.lib_suffix()].concat();
             let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
-            let src_dir = workspace_root().join("yru-echo-rs");
-            let out_dir = conf.build_dir().join("lv2").join("yru-echo-rs");
+            let src_dir = workspace_root().join("yru-echo-rs-mono");
+            let out_dir = conf.build_dir().join("lv2").join("yru-echo-rs-mono");
             fs::create_dir_all(&out_dir).unwrap();
             subst(
                 src_dir.join("manifest.ttl"),
@@ -36,7 +36,7 @@ const PACKAGES_CONF: &[PackageConf] = &[
                 subs,
             )
             .unwrap();
-            for e in &["yru-echo-rs.ttl"] {
+            for e in &["yru-echo-rs-mono.ttl"] {
                 fs::copy(src_dir.join(e), out_dir.join(e)).unwrap();
             }
             fs::copy(

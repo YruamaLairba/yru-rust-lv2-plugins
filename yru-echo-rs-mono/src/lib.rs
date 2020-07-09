@@ -26,7 +26,7 @@ struct Ports {
 
 /// A plugin to demonstrate how to make preset. This is fully handled by rdf spec, so the plugin
 /// does nothing.
-#[uri("urn:yru-rust-lv2-plugins:yru-echo-rs")]
+#[uri("urn:yru-rust-lv2-plugins:yru-echo-rs-mono")]
 struct YruEchoRs {
     sr: f32,
     rb: dasp_ring_buffer::Fixed<Vec<f32>>,

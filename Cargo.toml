@@ -6,6 +6,6 @@ members = [
     "yru-chorus-rs-stereo",
     "yru-flanger-rs-mono",
     "yru-flanger-rs-stereo",
-    "yru-echo-rs",
+    "yru-echo-rs-mono",
 ]
 
