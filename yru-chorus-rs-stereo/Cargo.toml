@@ -1,5 +1,5 @@
 [package]
-name = "yru-chorus-stereo-rs"
+name = "yru-chorus-rs-stereo"
 version = "0.1.0"
 authors = ["Yruama_Lairba <yruama_lairba@hotmail.com>"]
 edition = "2018"

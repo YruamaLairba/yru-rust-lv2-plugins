@@ -32,7 +32,7 @@ struct Ports {
     mix: InputPort<Control>,
 }
 
-#[uri("urn:yru-rust-lv2-plugins:yru-chorus-stereo-rs")]
+#[uri("urn:yru-rust-lv2-plugins:yru-chorus-rs-stereo")]
 struct YruChorusRs {
     l_rb: dasp_ring_buffer::Fixed<Vec<f32>>, //delay line for left channel
     r_rb: dasp_ring_buffer::Fixed<Vec<f32>>, //delay line for right channel
