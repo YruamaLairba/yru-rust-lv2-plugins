@@ -1,6 +1,0 @@
-@prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-
-<urn:yru-rust-lv2-plugins:yru-flanger-stereo-rs> a lv2:Plugin .
-<urn:yru-rust-lv2-plugins:yru-flanger-stereo-rs> lv2:binary <@LIB_FILE_NAME@> .
-<urn:yru-rust-lv2-plugins:yru-flanger-stereo-rs> rdfs:seeAlso <yru-flanger-stereo-rs.ttl> .

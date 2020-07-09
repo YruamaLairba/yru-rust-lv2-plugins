@@ -7,7 +7,7 @@
 
 # Plugin type. As this plugin doesn't do anything useful, it doesn't have
 # subtype
-<urn:yru-rust-lv2-plugins:yru-flanger-stereo-rs>
+<urn:yru-rust-lv2-plugins:yru-flanger-rs-stereo>
 	a lv2:Plugin ;
 # Associated project
 	lv2:project <https://github.com/YruamaLairba/yru-rust-lv2-plugins>;
