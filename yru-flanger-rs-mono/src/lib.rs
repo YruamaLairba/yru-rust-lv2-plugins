@@ -29,7 +29,7 @@ struct Ports {
     feedback: InputPort<Control>,
 }
 
-#[uri("urn:yru-rust-lv2-plugins:yru-flanger-rs")]
+#[uri("urn:yru-rust-lv2-plugins:yru-flanger-rs-mono")]
 struct YruFlangerRs {
     rb: dasp_ring_buffer::Fixed<Vec<f32>>,
     sr: f32,
