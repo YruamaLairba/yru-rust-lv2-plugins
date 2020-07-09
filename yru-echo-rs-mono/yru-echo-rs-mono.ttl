@@ -20,6 +20,7 @@
 	lv2:microVersion 2 ;
 # Plugin features
 	lv2:optionalFeature lv2:hardRTCapable ;
+	lv2:optionalFeature lv2:isLive ;
 #Author info
 	doap:maintainer [
 		foaf:name "Amaury ABRIAL aka Yruama_Lairba" ;
