@@ -1,6 +1,6 @@
 [package]
 name = "yru-tremolo-rs-stereo"
-version = "0.1.0"
+version = "1.2.2"
 authors = ["Yruama_Lairba <yruama_lairba@hotmail.com>"]
 edition = "2018"
 license = "GPL-3.0"
