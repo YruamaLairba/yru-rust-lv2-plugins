@@ -4,8 +4,9 @@ members = [
     "xtask",
     "yru-chorus-rs-mono",
     "yru-chorus-rs-stereo",
+    "yru-echo-rs-mono",
+    "yru-echo-rs-stereo",
     "yru-flanger-rs-mono",
     "yru-flanger-rs-stereo",
-    "yru-echo-rs-mono",
 ]
 
