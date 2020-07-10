@@ -17,19 +17,19 @@ use urid::*;
 
 #[derive(PortCollection)]
 struct Ports {
-    input: InputPort<Audio>,
-    output: OutputPort<Audio>,
+    l_in: InputPort<Audio>,
+    r_in: InputPort<Audio>,
+    l_out: OutputPort<Audio>,
+    r_out: OutputPort<Audio>,
     delay: InputPort<Control>,
     feedback: InputPort<Control>,
     mix: InputPort<Control>,
 }
 
-/// A plugin to demonstrate how to make preset. This is fully handled by rdf spec, so the plugin
-/// does nothing.
 #[uri("urn:yru-rust-lv2-plugins:yru-echo-rs-stereo")]
 struct YruEchoRs {
     sr: f32,
-    rb: dasp_ring_buffer::Fixed<Vec<f32>>,
+    rb: dasp_ring_buffer::Fixed<Vec<(f32, f32)>>,
 }
 
 impl Plugin for YruEchoRs {
@@ -40,7 +40,7 @@ impl Plugin for YruEchoRs {
     fn new(plugin_info: &PluginInfo, _features: &mut Self::InitFeatures) -> Option<Self> {
         let sr = plugin_info.sample_rate() as _;
         let max_delay_s = (plugin_info.sample_rate() * 2.0).ceil() as _;
-        let rb = dasp_ring_buffer::Fixed::from(vec![ 0f32; max_delay_s ]);
+        let rb = dasp_ring_buffer::Fixed::from(vec![(0f32, 0f32); max_delay_s]);
         Some(Self { sr, rb })
     }
 
@@ -49,10 +49,15 @@ impl Plugin for YruEchoRs {
         let feedback = *ports.feedback;
         let mix = *ports.mix;
         let rb_index = self.rb.len() - (delay_s as usize).max(1).min(self.rb.len());
-        for (s_in, s_out) in Iterator::zip(ports.input.iter(), ports.output.iter_mut()) {
+        for (s_in, s_out) in Iterator::zip(
+            Iterator::zip(ports.l_in.iter(), ports.r_in.iter()),
+            Iterator::zip(ports.l_out.iter_mut(), ports.r_out.iter_mut()),
+        ) {
             let delay_out = *self.rb.get(rb_index);
-            self.rb.push(*s_in+feedback*delay_out);
-            *s_out = mix*delay_out + (1.0-mix)*(*s_in);
+            let delay_in = (*s_in.0 + feedback * delay_out.0,*s_in.1 + feedback * delay_out.1);
+            self.rb.push(delay_in);
+            *s_out.0 = mix * delay_out.0 + (1.0 - mix) * (*s_in.0);
+            *s_out.1 = mix * delay_out.1 + (1.0 - mix) * (*s_in.1);
         }
     }
 }
