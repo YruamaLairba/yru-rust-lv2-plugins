@@ -30,48 +30,36 @@
 # ports description
 	lv2:port [
 		a lv2:InputPort ,
-			lv2:AudioPort ;
+			lv2:ControlPort ;
 		lv2:index 0 ;
+		lv2:symbol "depth" ;
+		lv2:name "Depth" ,
+			"Profondeur"@fr ;
+		units:unit   units:coef;
+		lv2:default 0.6 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+	] , [
+		a lv2:InputPort ,
+			lv2:ControlPort ;
+		lv2:index 1 ;
+		lv2:symbol "rate" ;
+		lv2:name "Rate" ,
+			"Vitesse"@fr ;
+		units:unit   units:hz;
+		lv2:default 5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 20.0 ;
+	] , [
+		a lv2:InputPort ,
+			lv2:AudioPort ;
+		lv2:index 2 ;
 		lv2:symbol "in" ;
 		lv2:name "In" ;
 	] , [
 		a lv2:OutputPort ,
 			lv2:AudioPort ;
-		lv2:index 1 ;
+		lv2:index 3 ;
 		lv2:symbol "out" ;
 		lv2:name "Out" ;
-	] , [
-		a lv2:InputPort ,
-			lv2:ControlPort ;
-		lv2:index 2 ;
-		lv2:symbol "delay" ;
-		lv2:name "Delay" ,
-			"Délai"@fr ;
-		units:unit   units:ms;
-		lv2:default 100.0 ;
-		lv2:minimum 0.0 ;
-		lv2:maximum 2000.0 ;
-	] , [
-		a lv2:InputPort ,
-			lv2:ControlPort ;
-		lv2:index 3 ;
-		lv2:symbol "feedback" ;
-		lv2:name "Feedback" ,
-			"Rétroaction"@fr ;
-		units:unit   units:coef;
-		lv2:default 0.5 ;
-		lv2:minimum 0.0 ;
-		lv2:maximum 1.0 ;
-	] , [
-		a lv2:InputPort ,
-			lv2:ControlPort ;
-		lv2:index 4 ;
-		lv2:symbol "mix" ;
-		lv2:name "Mix" ,
-			"Mélange"@fr ;
-		units:unit   units:coef;
-		lv2:default 0.5 ;
-		lv2:minimum 0.0 ;
-		lv2:maximum 1.0 ;
 	] .
-

@@ -14,47 +14,47 @@
 */
 use lv2_core::prelude::*;
 use urid::*;
+use std::f32::consts::PI;
 
 #[derive(PortCollection)]
 struct Ports {
+    depth: InputPort<Control>,
+    rate: InputPort<Control>,
     input: InputPort<Audio>,
     output: OutputPort<Audio>,
-    delay: InputPort<Control>,
-    feedback: InputPort<Control>,
-    mix: InputPort<Control>,
 }
 
 /// A plugin to demonstrate how to make preset. This is fully handled by rdf spec, so the plugin
 /// does nothing.
 #[uri("urn:yru-rust-lv2-plugins:yru-tremolo-rs-mono")]
-struct YruEchoRs {
+struct YruTremoloRs {
     sr: f32,
-    rb: dasp_ring_buffer::Fixed<Vec<f32>>,
+    progression: f32, // progression of modulation
 }
 
-impl Plugin for YruEchoRs {
+impl Plugin for YruTremoloRs {
     type Ports = Ports;
     type InitFeatures = ();
     type AudioFeatures = ();
 
     fn new(plugin_info: &PluginInfo, _features: &mut Self::InitFeatures) -> Option<Self> {
         let sr = plugin_info.sample_rate() as _;
-        let max_delay_s = (plugin_info.sample_rate() * 2.0).ceil() as _;
-        let rb = dasp_ring_buffer::Fixed::from(vec![ 0f32; max_delay_s ]);
-        Some(Self { sr, rb })
+        let progression = 0.0;
+        Some(Self { sr, progression })
     }
 
     fn run(&mut self, ports: &mut Ports, _features: &mut Self::AudioFeatures) {
-        let delay_s = self.sr * (*ports.delay as f32) * 0.001;
-        let feedback = *ports.feedback;
-        let mix = *ports.mix;
-        let rb_index = self.rb.len() - (delay_s as usize).max(1).min(self.rb.len());
+        let depth = *ports.depth;
+        let rate_smpl = *ports.rate / self.sr;
         for (s_in, s_out) in Iterator::zip(ports.input.iter(), ports.output.iter_mut()) {
-            let delay_out = *self.rb.get(rb_index);
-            self.rb.push(*s_in+feedback*delay_out);
-            *s_out = mix*delay_out + (1.0-mix)*(*s_in);
+            let gain = 1.0 - depth * 0.5*(f32::sin(2.0 * PI * self.progression) + 1.0);
+            self.progression += rate_smpl;
+            if self.progression > 1.0 {
+                self.progression -= 1.0;
+            }
+            *s_out = gain * s_in;
         }
     }
 }
 
-lv2_descriptors!(YruEchoRs);
+lv2_descriptors!(YruTremoloRs);
