@@ -1,7 +1,7 @@
-# yru-echo-rs
+# yru-echo-rs-mono
 
-Basic echo with delay feedback and mix parameters. The following diagram
-give an overview of how it works :
+Basic echo with delay feedback and mix parameters. The _echo block diagram_
+give an overview of how it works.
 
 ![echo block diagram](diagram/echo-diagram.png)
 
