@@ -1,0 +1,6 @@
+@prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<urn:yru-rust-lv2-plugins:yru-tremolo-rs-stereo> a lv2:Plugin .
+<urn:yru-rust-lv2-plugins:yru-tremolo-rs-stereo> lv2:binary <@LIB_FILE_NAME@> .
+<urn:yru-rust-lv2-plugins:yru-tremolo-rs-stereo> rdfs:seeAlso <yru-tremolo-rs-stereo.ttl> .

@@ -9,5 +9,6 @@ members = [
     "yru-flanger-rs-mono",
     "yru-flanger-rs-stereo",
     "yru-tremolo-rs-mono",
+    "yru-tremolo-rs-stereo",
 ]
 
