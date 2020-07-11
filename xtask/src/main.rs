@@ -241,15 +241,17 @@ struct Config<'a> {
 }
 
 impl<'a> Config<'a> {
-    //build config from environment variable and passed argument
+    ///build config from environment variable and passed argument
     fn from_env() -> Result<Self, DynError> {
         let mut args = env::args();
+        //get subcommand
         let subcommand = if let Some(arg) = args.nth(1) {
             arg
         } else {
             String::from("")
         };
 
+        //get build options
         let mut opts_args = Vec::<String>::new();
         for e in args {
             if e == "--" {
@@ -257,7 +259,6 @@ impl<'a> Config<'a> {
             }
             opts_args.push(e);
         }
-
         let mut opts = Options::new();
         opts.optmulti("p", "project", "project to build", "NAME");
         opts.optflag("", "all", "build all projects");
@@ -272,6 +273,7 @@ impl<'a> Config<'a> {
         opts.optflag("h", "help", "print this help menu");
         let matches = opts.parse(&opts_args)?;
 
+        //build config data from option and/or environment variable
         let target = if let Some(s) = matches.opt_str("target") {
             s
         } else if let Some(var) = env::var_os("CARGO_BUILD_TARGET") {
@@ -292,6 +294,7 @@ impl<'a> Config<'a> {
 
         let release = matches.opt_present("release");
 
+        //list of package to build
         let packages_conf = if matches.opt_present("all") || !matches.opt_present("project") {
             PACKAGES_CONF.iter().copied().collect::<Vec<PackageConf>>()
         } else {
@@ -319,14 +322,15 @@ impl<'a> Config<'a> {
         })
     }
 
+    ///Display help
     fn print_help(&self) {
         let brief = "Usage: cargo xtask SUBCOMMAND [options]";
         let mut usage = self.opts.usage(&brief);
         let more_help= "
-    Subcomands are:
+    Subcommands are:
         build   build lv2 project(s)
 
-    Handled environnement variable:
+    Handled environment variables:
         CARGO_BUILD_TARGET
         CARGO_TARGET_DIR
         CARGO_BUILD_TARGET_DIR
@@ -336,6 +340,7 @@ impl<'a> Config<'a> {
         print!("{}", usage);
     }
 
+    ///Absolute path to the Cargo build directory
     fn build_dir(&self) -> PathBuf {
         let profile_dir = if self.release { "release" } else { "debug" };
         workspace_root()
@@ -348,6 +353,7 @@ impl<'a> Config<'a> {
         self.packages_conf.clone()
     }
 
+    ///Guess the prefix used by Cargo when building a dynamic library with Cargo
     fn lib_prefix(&self) -> String {
         let prefix = if self.target.contains("apple") {
             "lib"
@@ -363,6 +369,7 @@ impl<'a> Config<'a> {
         String::from(prefix)
     }
 
+    ///Guess the suffix (i.e. extension) used by Cargo when building a dynamic library with Cargo
     fn lib_suffix(&self) -> String {
         let suffix = if self.target.contains("apple") {
             ".dylib"
@@ -396,6 +403,7 @@ fn try_main() -> Result<(), DynError> {
     Ok(())
 }
 
+///Build a full lv2 plugin
 fn build(conf: &mut Config) -> Result<(), DynError> {
     let mut cargo_args = Vec::<String>::new();
     if conf.release {
@@ -423,7 +431,7 @@ fn build(conf: &mut Config) -> Result<(), DynError> {
     Ok(())
 }
 
-//substitute tokens in a file
+///Create a new file using a template and a substitution list
 fn subst<P: AsRef<Path>, Q: AsRef<Path>>(
     in_path: P,
     out_path: Q,
@@ -470,6 +478,7 @@ fn debug(_conf: &mut Config) -> Result<(), DynError> {
     Ok(())
 }
 
+///Invoke a Cargo subcommand
 fn cargo(cmd: &str, args: &[String]) -> Result<(), DynError> {
     let cargo = env::var("CARGO").unwrap_or_else(|_| "cargo".to_string());
     let status = Command::new(cargo)
@@ -484,6 +493,10 @@ fn cargo(cmd: &str, args: &[String]) -> Result<(), DynError> {
     Ok(())
 }
 
+///Get the root path of the current workspace.
+///
+///This require `CARGO_MANIFEST_DIR` environment variable which is normally set the build script is
+///invoked through Cargo.
 fn workspace_root() -> PathBuf {
     Path::new(&env!("CARGO_MANIFEST_DIR"))
         .ancestors()
