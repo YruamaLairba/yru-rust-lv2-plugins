@@ -176,6 +176,17 @@ impl<'a> Config<'a> {
     }
 }
 
+///Do the job
+pub fn do_job(packages :&[PackageConf]) -> Result<(), DynError> {
+    let mut conf = Config::from_env(packages)?;
+    match conf.subcommand.as_ref() {
+        "build" => build(&mut conf)?,
+        "debug" => debug(&mut conf)?,
+        _ => conf.print_help(),
+    }
+    Ok(())
+}
+
 ///Build a full lv2 plugin
 pub fn build(conf: &mut Config) -> Result<(), DynError> {
     let mut cargo_args = Vec::<String>::new();

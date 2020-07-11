@@ -269,20 +269,5 @@ const PACKAGES_CONF: &[PackageConf] = &[
 ];
 
 fn main() {
-    if let Err(e) = try_main() {
-        eprintln!("{}", e);
-        std::process::exit(-1);
-    }
-}
-
-type DynError = Box<dyn std::error::Error>;
-
-fn try_main() -> Result<(), DynError> {
-    let mut conf = Config::from_env(PACKAGES_CONF)?;
-    match conf.subcommand.as_ref() {
-        "build" => build(&mut conf)?,
-        "debug" => debug(&mut conf)?,
-        _ => conf.print_help(),
-    }
-    Ok(())
+    do_job(PACKAGES_CONF).unwrap();
 }
