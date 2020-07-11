@@ -5,8 +5,10 @@ const PACKAGES_CONF: &[PackageConf] = &[
     PackageConf {
         name: "yru-echo-rs-mono",
         post_build: |conf| {
-            let built_bin_name = [&conf.lib_prefix(), "yru_echo_rs_mono", &conf.lib_suffix()].concat();
-            let lib_file_name = [&conf.lib_prefix(), "yru-echo-rs-mono", &conf.lib_suffix()].concat();
+            let built_bin_name =
+                [&conf.lib_prefix(), "yru_echo_rs_mono", &conf.lib_suffix()].concat();
+            let lib_file_name =
+                [&conf.lib_prefix(), "yru-echo-rs-mono", &conf.lib_suffix()].concat();
             let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
             let src_dir = workspace_root().join("yru-echo-rs-mono");
             let out_dir = conf.build_dir().join("lv2").join("yru-echo-rs-mono");
@@ -31,8 +33,10 @@ const PACKAGES_CONF: &[PackageConf] = &[
     PackageConf {
         name: "yru-echo-rs-stereo",
         post_build: |conf| {
-            let built_bin_name = [&conf.lib_prefix(), "yru_echo_rs_stereo", &conf.lib_suffix()].concat();
-            let lib_file_name = [&conf.lib_prefix(), "yru-echo-rs-stereo", &conf.lib_suffix()].concat();
+            let built_bin_name =
+                [&conf.lib_prefix(), "yru_echo_rs_stereo", &conf.lib_suffix()].concat();
+            let lib_file_name =
+                [&conf.lib_prefix(), "yru-echo-rs-stereo", &conf.lib_suffix()].concat();
             let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
             let src_dir = workspace_root().join("yru-echo-rs-stereo");
             let out_dir = conf.build_dir().join("lv2").join("yru-echo-rs-stereo");
@@ -57,8 +61,10 @@ const PACKAGES_CONF: &[PackageConf] = &[
     PackageConf {
         name: "yru-chorus-rs-mono",
         post_build: |conf| {
-            let built_bin_name = [&conf.lib_prefix(), "yru_chorus_rs_mono", &conf.lib_suffix()].concat();
-            let lib_file_name = [&conf.lib_prefix(), "yru-chorus-rs-mono", &conf.lib_suffix()].concat();
+            let built_bin_name =
+                [&conf.lib_prefix(), "yru_chorus_rs_mono", &conf.lib_suffix()].concat();
+            let lib_file_name =
+                [&conf.lib_prefix(), "yru-chorus-rs-mono", &conf.lib_suffix()].concat();
             let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
             let src_dir = workspace_root().join("yru-chorus-rs-mono");
             let out_dir = conf.build_dir().join("lv2").join("yru-chorus-rs-mono");
@@ -83,8 +89,18 @@ const PACKAGES_CONF: &[PackageConf] = &[
     PackageConf {
         name: "yru-chorus-rs-stereo",
         post_build: |conf| {
-            let built_bin_name = [&conf.lib_prefix(), "yru_chorus_rs_stereo", &conf.lib_suffix()].concat();
-            let lib_file_name = [&conf.lib_prefix(), "yru-chorus-rs-stereo", &conf.lib_suffix()].concat();
+            let built_bin_name = [
+                &conf.lib_prefix(),
+                "yru_chorus_rs_stereo",
+                &conf.lib_suffix(),
+            ]
+            .concat();
+            let lib_file_name = [
+                &conf.lib_prefix(),
+                "yru-chorus-rs-stereo",
+                &conf.lib_suffix(),
+            ]
+            .concat();
             let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
             let src_dir = workspace_root().join("yru-chorus-rs-stereo");
             let out_dir = conf.build_dir().join("lv2").join("yru-chorus-rs-stereo");
@@ -109,8 +125,18 @@ const PACKAGES_CONF: &[PackageConf] = &[
     PackageConf {
         name: "yru-flanger-rs-mono",
         post_build: |conf| {
-            let built_bin_name = [&conf.lib_prefix(), "yru_flanger_rs_mono", &conf.lib_suffix()].concat();
-            let lib_file_name = [&conf.lib_prefix(), "yru-flanger-rs-mono", &conf.lib_suffix()].concat();
+            let built_bin_name = [
+                &conf.lib_prefix(),
+                "yru_flanger_rs_mono",
+                &conf.lib_suffix(),
+            ]
+            .concat();
+            let lib_file_name = [
+                &conf.lib_prefix(),
+                "yru-flanger-rs-mono",
+                &conf.lib_suffix(),
+            ]
+            .concat();
             let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
             let src_dir = workspace_root().join("yru-flanger-rs-mono");
             let out_dir = conf.build_dir().join("lv2").join("yru-flanger-rs-mono");
@@ -135,8 +161,18 @@ const PACKAGES_CONF: &[PackageConf] = &[
     PackageConf {
         name: "yru-flanger-rs-stereo",
         post_build: |conf| {
-            let built_bin_name = [&conf.lib_prefix(), "yru_flanger_rs_stereo", &conf.lib_suffix()].concat();
-            let lib_file_name = [&conf.lib_prefix(), "yru-flanger-rs-stereo", &conf.lib_suffix()].concat();
+            let built_bin_name = [
+                &conf.lib_prefix(),
+                "yru_flanger_rs_stereo",
+                &conf.lib_suffix(),
+            ]
+            .concat();
+            let lib_file_name = [
+                &conf.lib_prefix(),
+                "yru-flanger-rs-stereo",
+                &conf.lib_suffix(),
+            ]
+            .concat();
             let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
             let src_dir = workspace_root().join("yru-flanger-rs-stereo");
             let out_dir = conf.build_dir().join("lv2").join("yru-flanger-rs-stereo");
@@ -161,8 +197,18 @@ const PACKAGES_CONF: &[PackageConf] = &[
     PackageConf {
         name: "yru-tremolo-rs-mono",
         post_build: |conf| {
-            let built_bin_name = [&conf.lib_prefix(), "yru_tremolo_rs_mono", &conf.lib_suffix()].concat();
-            let lib_file_name = [&conf.lib_prefix(), "yru-tremolo-rs-mono", &conf.lib_suffix()].concat();
+            let built_bin_name = [
+                &conf.lib_prefix(),
+                "yru_tremolo_rs_mono",
+                &conf.lib_suffix(),
+            ]
+            .concat();
+            let lib_file_name = [
+                &conf.lib_prefix(),
+                "yru-tremolo-rs-mono",
+                &conf.lib_suffix(),
+            ]
+            .concat();
             let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
             let src_dir = workspace_root().join("yru-tremolo-rs-mono");
             let out_dir = conf.build_dir().join("lv2").join("yru-tremolo-rs-mono");
@@ -187,8 +233,18 @@ const PACKAGES_CONF: &[PackageConf] = &[
     PackageConf {
         name: "yru-tremolo-rs-stereo",
         post_build: |conf| {
-            let built_bin_name = [&conf.lib_prefix(), "yru_tremolo_rs_stereo", &conf.lib_suffix()].concat();
-            let lib_file_name = [&conf.lib_prefix(), "yru-tremolo-rs-stereo", &conf.lib_suffix()].concat();
+            let built_bin_name = [
+                &conf.lib_prefix(),
+                "yru_tremolo_rs_stereo",
+                &conf.lib_suffix(),
+            ]
+            .concat();
+            let lib_file_name = [
+                &conf.lib_prefix(),
+                "yru-tremolo-rs-stereo",
+                &conf.lib_suffix(),
+            ]
+            .concat();
             let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
             let src_dir = workspace_root().join("yru-tremolo-rs-stereo");
             let out_dir = conf.build_dir().join("lv2").join("yru-tremolo-rs-stereo");
@@ -230,5 +286,3 @@ fn try_main() -> Result<(), DynError> {
     }
     Ok(())
 }
-
-

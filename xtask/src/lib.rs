@@ -29,7 +29,7 @@ pub struct Config<'a> {
 
 impl<'a> Config<'a> {
     ///build config from environment variable and passed argument
-    pub fn from_env(all_packages_conf: &'a[PackageConf]) -> Result<Self, DynError> {
+    pub fn from_env(all_packages_conf: &'a [PackageConf]) -> Result<Self, DynError> {
         let mut args = env::args();
         //get subcommand
         let subcommand = if let Some(arg) = args.nth(1) {
@@ -83,7 +83,10 @@ impl<'a> Config<'a> {
 
         //list of package to build
         let packages_conf = if matches.opt_present("all") || !matches.opt_present("project") {
-            all_packages_conf.iter().copied().collect::<Vec<PackageConf>>()
+            all_packages_conf
+                .iter()
+                .copied()
+                .collect::<Vec<PackageConf>>()
         } else {
             let mut tmp = Vec::<PackageConf>::new();
             let project = matches.opt_strs("p");
@@ -113,7 +116,7 @@ impl<'a> Config<'a> {
     pub fn print_help(&self) {
         let brief = "Usage: cargo xtask SUBCOMMAND [options]";
         let mut usage = self.opts.usage(&brief);
-        let more_help= "
+        let more_help = "
     Subcommands are:
         build   build lv2 project(s)
 
@@ -265,8 +268,8 @@ pub fn cargo(cmd: &str, args: &[String]) -> Result<(), DynError> {
 
 ///Get the root path of the current workspace.
 ///
-///This require `CARGO_MANIFEST_DIR` environment variable which is normally set the build script is
-///invoked through Cargo.
+///This require `CARGO_MANIFEST_DIR` environment variable to be set at compile time which is
+///normally the case when it's compiled with Cargo
 pub fn workspace_root() -> PathBuf {
     Path::new(&env!("CARGO_MANIFEST_DIR"))
         .ancestors()
