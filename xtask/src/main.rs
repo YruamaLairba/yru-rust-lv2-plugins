@@ -29,6 +29,11 @@ const PACKAGES_CONF: &[PackageConf] = &[
             .unwrap();
             Ok(())
         },
+        install: |conf| {
+            let src_dir = conf.build_dir().join("lv2").join("yru-echo-rs-mono");
+            let dest_dir = conf.install_dir().join("yru-echo-rs-mono");
+            copy_dir(src_dir, dest_dir)
+        }
     },
     PackageConf {
         name: "yru-echo-rs-stereo",
@@ -57,6 +62,11 @@ const PACKAGES_CONF: &[PackageConf] = &[
             .unwrap();
             Ok(())
         },
+        install: |conf| {
+            let src_dir = conf.build_dir().join("lv2").join("yru-echo-rs-stereo");
+            let dest_dir = conf.install_dir().join("yru-echo-rs-stereo");
+            copy_dir(src_dir, dest_dir)
+        }
     },
     PackageConf {
         name: "yru-chorus-rs-mono",
@@ -85,6 +95,9 @@ const PACKAGES_CONF: &[PackageConf] = &[
             .unwrap();
             Ok(())
         },
+        install: |_| {
+            todo!();
+        }
     },
     PackageConf {
         name: "yru-chorus-rs-stereo",
@@ -121,6 +134,9 @@ const PACKAGES_CONF: &[PackageConf] = &[
             .unwrap();
             Ok(())
         },
+        install: |_| {
+            todo!();
+        }
     },
     PackageConf {
         name: "yru-flanger-rs-mono",
@@ -157,6 +173,9 @@ const PACKAGES_CONF: &[PackageConf] = &[
             .unwrap();
             Ok(())
         },
+        install: |_| {
+            todo!();
+        }
     },
     PackageConf {
         name: "yru-flanger-rs-stereo",
@@ -193,6 +212,9 @@ const PACKAGES_CONF: &[PackageConf] = &[
             .unwrap();
             Ok(())
         },
+        install: |_| {
+            todo!();
+        }
     },
     PackageConf {
         name: "yru-tremolo-rs-mono",
@@ -229,6 +251,9 @@ const PACKAGES_CONF: &[PackageConf] = &[
             .unwrap();
             Ok(())
         },
+        install: |_| {
+            todo!();
+        }
     },
     PackageConf {
         name: "yru-tremolo-rs-stereo",
@@ -265,6 +290,9 @@ const PACKAGES_CONF: &[PackageConf] = &[
             .unwrap();
             Ok(())
         },
+        install: |_| {
+            todo!();
+        }
     },
 ];
 

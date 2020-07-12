@@ -18,7 +18,7 @@ type DynError = Box<dyn std::error::Error>;
 pub struct PackageConf<'a> {
     pub name: &'a str,
     pub post_build: fn(conf: &Config) -> Result<(), DynError>,
-    //pub install: fn(conf: &Config) -> Result<(), DynError>,
+    pub install: fn(conf: &Config) -> Result<(), DynError>,
 }
 
 pub struct Config<'a> {
@@ -84,7 +84,7 @@ impl<'a> Config<'a> {
             String::from("target")
         };
 
-        let install_dir = if let Some(s) = matches.opt_str("instal-dir") {
+        let install_dir = if let Some(s) = matches.opt_str("install-dir") {
             s
         } else if target.contains("apple") {
             env::var("HOME").unwrap() + "/Library/Audio/Plug-Ins/LV2"
@@ -205,6 +205,7 @@ pub fn do_job(packages: &[PackageConf]) -> Result<(), DynError> {
     let mut conf = Config::from_env(packages)?;
     match conf.subcommand.as_ref() {
         "build" => build(&mut conf)?,
+        "install" => install(&mut conf)?,
         "debug" => debug(&mut conf)?,
         _ => conf.print_help(),
     }
@@ -239,17 +240,17 @@ pub fn build(conf: &mut Config) -> Result<(), DynError> {
     Ok(())
 }
 
-/////Build and install lv2 plugin
-//pub fn install(conf: &mut Config) -> Result<(), DynError> {
-//    build(conf)?;
-//    println!("Installing plugin(s)");
-//    for p in conf.packages_conf() {
-//        (p.install)(conf)?;
-//    }
-//    println!("Finished");
-//    println!();
-//    Ok(())
-//}
+///Build and install lv2 plugin
+pub fn install(conf: &mut Config) -> Result<(), DynError> {
+    build(conf)?;
+    println!("Installing plugin(s)");
+    for p in conf.packages_conf() {
+        (p.install)(conf)?;
+    }
+    println!("Finished");
+    println!();
+    Ok(())
+}
 
 ///Create a new file using a template and a substitution list
 pub fn subst<P: AsRef<Path>, Q: AsRef<Path>>(
