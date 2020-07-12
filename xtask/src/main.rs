@@ -36,7 +36,7 @@ const PACKAGES_CONF: &[PackageConf] = &[
         },
         uninstall: |conf| {
             let rm_dir = conf.install_dir().join("yru-echo-rs-mono");
-            fs::remove_dir_all(rm_dir).unwrap();
+            uninstall_dir(rm_dir).unwrap();
             Ok(())
         },
     },

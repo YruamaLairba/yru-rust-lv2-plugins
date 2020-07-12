@@ -7,6 +7,7 @@ use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::io::BufWriter;
+use std::io::ErrorKind;
 use std::io::Write;
 use std::iter::Iterator;
 use std::path::{Path, PathBuf};
@@ -311,6 +312,16 @@ pub fn copy_dir<P: AsRef<Path>, Q: AsRef<Path>>(in_path: P, out_path: Q) -> Resu
             fs::create_dir_all(&dest_path).unwrap();
         } else if src_path.is_file() {
             fs::copy(src_path, dest_path).unwrap();
+        }
+    }
+    Ok(())
+}
+
+///Delete a dir without triggering error if path doesn't exist
+pub fn uninstall_dir<P: AsRef<Path>>(path: P) -> Result<(), DynError> {
+    if let Err(e) = fs::remove_dir_all(path) {
+        if e.kind() != ErrorKind::NotFound {
+            return Err(e.into());
         }
     }
     Ok(())
