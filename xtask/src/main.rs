@@ -1,45 +1,53 @@
 use std::fs;
 use xtask::*;
 
+macro_rules! pkg_model {
+    ( $name:literal, $bname:literal, $subs:expr , $copies:expr) => {{
+        PackageConf {
+            name: $name,
+            post_build: |conf| {
+                let built_bin_name =
+                    [&conf.lib_prefix(), $bname, &conf.lib_suffix()].concat();
+                let lib_file_name =
+                    [&conf.lib_prefix(), $name, &conf.lib_suffix()].concat();
+                let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
+                let src_dir = workspace_root().join($name);
+                let out_dir = conf.build_dir().join("lv2").join($name);
+                fs::create_dir_all(&out_dir).unwrap();
+                for e in &$subs {
+                    subst(
+                        src_dir.join(e),
+                        out_dir.join(e),
+                        subs,
+                    )
+                    .unwrap();
+                }
+                for e in &$copies {
+                    fs::copy(src_dir.join(e), out_dir.join(e)).unwrap();
+                }
+                fs::copy(
+                    conf.build_dir().join(&built_bin_name),
+                    out_dir.join(&lib_file_name),
+                )
+                    .unwrap();
+                Ok(())
+            },
+            install: |conf| {
+                let src_dir = conf.build_dir().join("lv2").join($name);
+                let dest_dir = conf.install_dir().join($name);
+                copy_dir(src_dir, dest_dir)
+            },
+            uninstall: |conf| {
+                let rm_dir = conf.install_dir().join($name);
+                uninstall_dir(rm_dir).unwrap();
+                Ok(())
+            },
+        }
+    }};
+}
+
 const PACKAGES_CONF: &[PackageConf] = &[
-    PackageConf {
-        name: "yru-echo-rs-mono",
-        post_build: |conf| {
-            let built_bin_name =
-                [&conf.lib_prefix(), "yru_echo_rs_mono", &conf.lib_suffix()].concat();
-            let lib_file_name =
-                [&conf.lib_prefix(), "yru-echo-rs-mono", &conf.lib_suffix()].concat();
-            let subs: &[(&str, &str)] = &[("@LIB_FILE_NAME@", &lib_file_name)];
-            let src_dir = workspace_root().join("yru-echo-rs-mono");
-            let out_dir = conf.build_dir().join("lv2").join("yru-echo-rs-mono");
-            fs::create_dir_all(&out_dir).unwrap();
-            subst(
-                src_dir.join("manifest.ttl"),
-                out_dir.join("manifest.ttl"),
-                subs,
-            )
-            .unwrap();
-            for e in &["yru-echo-rs-mono.ttl"] {
-                fs::copy(src_dir.join(e), out_dir.join(e)).unwrap();
-            }
-            fs::copy(
-                conf.build_dir().join(&built_bin_name),
-                out_dir.join(&lib_file_name),
-            )
-            .unwrap();
-            Ok(())
-        },
-        install: |conf| {
-            let src_dir = conf.build_dir().join("lv2").join("yru-echo-rs-mono");
-            let dest_dir = conf.install_dir().join("yru-echo-rs-mono");
-            copy_dir(src_dir, dest_dir)
-        },
-        uninstall: |conf| {
-            let rm_dir = conf.install_dir().join("yru-echo-rs-mono");
-            uninstall_dir(rm_dir).unwrap();
-            Ok(())
-        },
-    },
+    pkg_model!("yru-echo-rs-mono","yru_echo_rs_mono",["manifest.ttl"], ["yru-echo-rs-mono.ttl"]),
     PackageConf {
         name: "yru-echo-rs-stereo",
         post_build: |conf| {
