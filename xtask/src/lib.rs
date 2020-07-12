@@ -1,6 +1,8 @@
 extern crate getopts;
 use getopts::Options;
+use std::collections::BTreeSet;
 use std::env;
+use std::fs;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -16,6 +18,7 @@ type DynError = Box<dyn std::error::Error>;
 pub struct PackageConf<'a> {
     pub name: &'a str,
     pub post_build: fn(conf: &Config) -> Result<(), DynError>,
+    //pub install: fn(conf: &Config) -> Result<(), DynError>,
 }
 
 pub struct Config<'a> {
@@ -177,7 +180,7 @@ impl<'a> Config<'a> {
 }
 
 ///Do the job
-pub fn do_job(packages :&[PackageConf]) -> Result<(), DynError> {
+pub fn do_job(packages: &[PackageConf]) -> Result<(), DynError> {
     let mut conf = Config::from_env(packages)?;
     match conf.subcommand.as_ref() {
         "build" => build(&mut conf)?,
@@ -230,6 +233,38 @@ pub fn subst<P: AsRef<Path>, Q: AsRef<Path>>(
         }
         write!(out_file, "{}", buf)?;
         buf.clear();
+    }
+    Ok(())
+}
+
+///Return a BTreeSet that represent the tree of a directory
+fn dir_tree<P: AsRef<Path>>(path: P) -> BTreeSet<PathBuf> {
+    let mut paths: BTreeSet<PathBuf> = BTreeSet::new();
+    for entry in fs::read_dir(path).unwrap() {
+        let path = entry.unwrap().path();
+        if path.is_dir() {
+            paths.append(&mut dir_tree(&path));
+        }
+        paths.insert(path);
+    }
+    paths
+}
+
+///Copy recursively a directory
+pub fn copy_dir<P: AsRef<Path>, Q: AsRef<Path>>(in_path: P, out_path: Q) -> Result<(), DynError> {
+    let in_path = in_path.as_ref();
+    let out_path = out_path.as_ref();
+    if !in_path.is_dir() {
+        return Err(format!("'{:?}' is not a directory ", &in_path).into());
+    }
+    fs::create_dir_all(&out_path).unwrap();
+    for src_path in dir_tree(in_path) {
+        let dest_path = out_path.join(src_path.strip_prefix(in_path).unwrap());
+        if src_path.is_dir() {
+            fs::create_dir_all(&dest_path).unwrap();
+        } else if src_path.is_file() {
+            fs::copy(src_path, dest_path).unwrap();
+        }
     }
     Ok(())
 }
