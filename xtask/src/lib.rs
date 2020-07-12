@@ -19,6 +19,7 @@ pub struct PackageConf<'a> {
     pub name: &'a str,
     pub post_build: fn(conf: &Config) -> Result<(), DynError>,
     pub install: fn(conf: &Config) -> Result<(), DynError>,
+    pub uninstall: fn(conf: &Config) -> Result<(), DynError>,
 }
 
 pub struct Config<'a> {
@@ -206,6 +207,7 @@ pub fn do_job(packages: &[PackageConf]) -> Result<(), DynError> {
     match conf.subcommand.as_ref() {
         "build" => build(&mut conf)?,
         "install" => install(&mut conf)?,
+        "uninstall" => uninstall(&mut conf)?,
         "debug" => debug(&mut conf)?,
         _ => conf.print_help(),
     }
@@ -240,12 +242,23 @@ pub fn build(conf: &mut Config) -> Result<(), DynError> {
     Ok(())
 }
 
-///Build and install lv2 plugin
+///Build and install lv2 plugin(s)
 pub fn install(conf: &mut Config) -> Result<(), DynError> {
     build(conf)?;
     println!("Installing plugin(s)");
     for p in conf.packages_conf() {
         (p.install)(conf)?;
+    }
+    println!("Finished");
+    println!();
+    Ok(())
+}
+
+///Uninstall plugin(s)
+pub fn uninstall(conf: &mut Config) -> Result<(), DynError> {
+    println!("Uninstalling plugin(s)");
+    for p in conf.packages_conf() {
+        (p.uninstall)(conf)?;
     }
     println!("Finished");
     println!();
