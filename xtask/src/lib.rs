@@ -23,8 +23,9 @@ pub struct PackageConf<'a> {
 
 pub struct Config<'a> {
     pub subcommand: String,
-    target: String,     // target-triple
-    target_dir: String, // directory for all generated artifact
+    target: String,      // target-triple
+    target_dir: String,  // directory for all generated artifact
+    install_dir: String, // directory for installation
     release: bool,
     packages_conf: Vec<PackageConf<'a>>,
     opts: Options,
@@ -60,6 +61,7 @@ impl<'a> Config<'a> {
             "directory for all generated artifacts",
             "DIRECTORY",
         );
+        opts.optopt("", "install-dir", "installation directory", "DIRECTORY");
         opts.optflag("h", "help", "print this help menu");
         let matches = opts.parse(&opts_args)?;
 
@@ -80,6 +82,20 @@ impl<'a> Config<'a> {
             var.into_string().unwrap()
         } else {
             String::from("target")
+        };
+
+        let install_dir = if let Some(s) = matches.opt_str("instal-dir") {
+            s
+        } else if target.contains("apple") {
+            env::var("HOME").unwrap() + "/Library/Audio/Plug-Ins/LV2"
+        } else if target.contains("windows") {
+            env::var("APPDATA").unwrap() + "/LV2"
+        } else if cfg!(target_vendor = "apple") {
+            env::var("HOME").unwrap() + "/Library/Audio/Plug-Ins/LV2"
+        } else if cfg!(target_os = "windows") {
+            env::var("APPDATA").unwrap() + "/LV2"
+        } else {
+            env::var("HOME").unwrap() + "/.lv2"
         };
 
         let release = matches.opt_present("release");
@@ -109,6 +125,7 @@ impl<'a> Config<'a> {
             subcommand,
             target,
             target_dir,
+            install_dir,
             release,
             packages_conf,
             opts,
@@ -140,6 +157,10 @@ impl<'a> Config<'a> {
             .join(&self.target_dir)
             .join(&self.target)
             .join(profile_dir)
+    }
+
+    pub fn install_dir(&self) -> PathBuf {
+        PathBuf::from(&self.install_dir)
     }
 
     fn packages_conf(&self) -> Vec<PackageConf> {
@@ -217,6 +238,18 @@ pub fn build(conf: &mut Config) -> Result<(), DynError> {
     println!();
     Ok(())
 }
+
+/////Build and install lv2 plugin
+//pub fn install(conf: &mut Config) -> Result<(), DynError> {
+//    build(conf)?;
+//    println!("Installing plugin(s)");
+//    for p in conf.packages_conf() {
+//        (p.install)(conf)?;
+//    }
+//    println!("Finished");
+//    println!();
+//    Ok(())
+//}
 
 ///Create a new file using a template and a substitution list
 pub fn subst<P: AsRef<Path>, Q: AsRef<Path>>(
