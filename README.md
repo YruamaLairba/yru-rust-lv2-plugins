@@ -18,10 +18,24 @@ directory. For example if you used `cargo xtask build`, plugin are placed by
 default in `target/debug/lv2`. See [cargo
 documentation](https://doc.rust-lang.org/cargo/) for more details.
 
-**Note about xtask**: it's a custom embedded script allowing to handle
-post-build actions. This script may fail with some particular cargo
-configuration (typically,file not found). Feel free to fill an issue if it
-happen
+## Install
+
+ - `cargo xtask install` to build with optimisation and install all
+   plugins.
+ - `cargo xtask build -p <plugin>` to build a particular plugin with
+   optimisation and install it.
+ - **don't forget the `--release` flag, to enable optimisation!**
+ - use `--install-dir` option to change the installation path. The default
+   installation destination is the [LV2 user specific standard
+path](https://lv2plug.in/pages/filesystem-hierarchy-standard.html).
+
+Don't forget the `--release` flag, to enable optimisation!
+
+## Note about xtask
+_xtask_ is a custom embedded script written to handle post-build actions.
+Sometimes, this script may fail with some particular cargo configuration.
+Typical error is file not found. Feel free to fill an issue and describe cargo
+configuration if it happen.
 
 ## License
 
