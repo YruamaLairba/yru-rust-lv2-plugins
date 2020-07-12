@@ -140,7 +140,9 @@ impl<'a> Config<'a> {
         let mut usage = self.opts.usage(&brief);
         let more_help = "
     Subcommands are:
-        build   build lv2 project(s)
+        build           build lv2 project(s)
+        install         build and install lv2 plugin(s)
+        uninstall       uninstall lv2 plugin(s)
 
     Handled environment variables:
         CARGO_BUILD_TARGET
